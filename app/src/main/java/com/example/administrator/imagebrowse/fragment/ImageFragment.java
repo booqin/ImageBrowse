@@ -1,15 +1,21 @@
 package com.example.administrator.imagebrowse.fragment;
 
-import com.example.administrator.imagebrowse.R;
-import com.example.administrator.imagebrowse.adapter.ImagePagerAdapter;
-import com.facebook.drawee.view.SimpleDraweeView;
-
+import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.administrator.imagebrowse.R;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
+
+import me.relex.photodraweeview.PhotoDraweeView;
 
 /**
  * TODO
@@ -23,7 +29,7 @@ public class ImageFragment extends Fragment{
     private static final String TAG = ImageFragment.class.getSimpleName();
 
     private String mPath;
-    private SimpleDraweeView mDraweeView;
+    private PhotoDraweeView mDraweeView;
 
     public static ImageFragment newInstance(String path) {
         ImageFragment newFragment = new ImageFragment();
@@ -62,8 +68,21 @@ public class ImageFragment extends Fragment{
             @Nullable
                     Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mDraweeView = (SimpleDraweeView) view.findViewById(R.id.sdv);
-        mDraweeView.setImageURI(mPath);
+        mDraweeView = (PhotoDraweeView) view.findViewById(R.id.sdv);
+        PipelineDraweeControllerBuilder controller = Fresco.newDraweeControllerBuilder();
+        controller.setUri(mPath);
+        controller.setOldController(mDraweeView.getController());
+        controller.setControllerListener(new BaseControllerListener<ImageInfo>() {
+            @Override
+            public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+                super.onFinalImageSet(id, imageInfo, animatable);
+                if (imageInfo == null || mDraweeView == null) {
+                    return;
+                }
+                mDraweeView.update(imageInfo.getWidth(), imageInfo.getHeight());
+            }
+        });
+        mDraweeView.setController(controller.build());
 
     }
 }
