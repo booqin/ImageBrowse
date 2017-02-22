@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.administrator.imagebrowse.R;
+import com.example.administrator.imagebrowse.view.DragLayout;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
@@ -28,6 +29,7 @@ public class ImageFragment extends Fragment{
     private static final String TAG = ImageFragment.class.getSimpleName();
 
     private String mPath;
+    private DragLayout mDragLayout;
     private PhotoDraweeView mDraweeView;
 
     public static ImageFragment newInstance(String path) {
@@ -62,7 +64,9 @@ public class ImageFragment extends Fragment{
         //
 //        return LayoutInflater.from(container.getContext()).inflate(R.layout.item_image_drawee, container, false);
 //        return LayoutInflater.from(container.getContext()).inflate(R.layout.item_image_layout, container, false);
-        return LayoutInflater.from(container.getContext()).inflate(R.layout.item_image_drag_drawee, container, false);
+        mDragLayout = (DragLayout) LayoutInflater.from(container.getContext()).inflate(R.layout.item_image_drag_drawee, container, false);
+
+        return mDragLayout;
     }
 
     @Override
@@ -85,6 +89,12 @@ public class ImageFragment extends Fragment{
             }
         });
         mDraweeView.setController(controller.build());
-
+        mDragLayout.setViewPositionChangedListener(new DragLayout.ViewPositionChangedListener() {
+            @Override
+            public void onViewPositionChanged(View changedView, int left, int top) {
+//                mDraweeView.setScale(0.5f);
+//                mDraweeView.invalidate();
+            }
+        });
     }
 }

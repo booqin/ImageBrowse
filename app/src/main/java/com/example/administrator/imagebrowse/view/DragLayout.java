@@ -23,6 +23,7 @@ public class DragLayout extends LinearLayout{
     private ViewDragHelper mDragHelper;
     private View mChilderView;
     private Point mAutoBackOriginPos = new Point();
+    private ViewPositionChangedListener mViewPositionChangedListener;
 
     /** 手势检测工具 */
     private GestureDetector mGestureDetector;
@@ -62,6 +63,10 @@ public class DragLayout extends LinearLayout{
             @Override
             public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
                 super.onViewPositionChanged(changedView, left, top, dx, dy);
+                if(mViewPositionChangedListener!=null){
+//                    left/mAutoBackOriginPos.x
+                    mViewPositionChangedListener.onViewPositionChanged(changedView, left, top);
+                }
             }
 
             @Override
@@ -135,6 +140,12 @@ public class DragLayout extends LinearLayout{
         mChilderView = getChildAt(0);
     }
 
+    /**
+     * 设置位置变化监听
+     */
+    public void setViewPositionChangedListener(ViewPositionChangedListener viewPositionChangedListener) {
+        mViewPositionChangedListener = viewPositionChangedListener;
+    }
 
     /**
      * 重置位置
@@ -143,5 +154,13 @@ public class DragLayout extends LinearLayout{
         //恢复到初始位置
         mDragHelper.settleCapturedViewAt(mAutoBackOriginPos.x, mAutoBackOriginPos.y);
         invalidate();
+    }
+
+    /**
+     * 位置变化接口
+     * @description: Created by Boqin on 2017/2/22 17:18
+     */
+    public interface ViewPositionChangedListener{
+        void onViewPositionChanged(View changedView, int left, int top);
     }
 }
