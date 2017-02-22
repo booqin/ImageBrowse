@@ -12,7 +12,6 @@ import com.example.administrator.imagebrowse.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
 
 import me.relex.photodraweeview.PhotoDraweeView;
@@ -60,7 +59,10 @@ public class ImageFragment extends Fragment{
                     ViewGroup container,
             @Nullable
                     Bundle savedInstanceState) {
-        return LayoutInflater.from(container.getContext()).inflate(R.layout.item_view_image, container, false);
+        //
+//        return LayoutInflater.from(container.getContext()).inflate(R.layout.item_image_drawee, container, false);
+//        return LayoutInflater.from(container.getContext()).inflate(R.layout.item_image_layout, container, false);
+        return LayoutInflater.from(container.getContext()).inflate(R.layout.item_image_drag_drawee, container, false);
     }
 
     @Override
