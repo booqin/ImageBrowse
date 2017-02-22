@@ -30,7 +30,6 @@ public class ZoomableDraweeView extends SimpleDraweeView{
     private float mMidY;
     private OnClickListener mClickListener;
 
-
     public ZoomableDraweeView(Context context) {
         super(context);
         init();
