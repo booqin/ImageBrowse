@@ -141,7 +141,11 @@ public class Attacher implements IAttacher, View.OnTouchListener, OnScaleDragGes
     @Override public void setScale(float scale, float focalX, float focalY, boolean animate) {
         DraweeView<GenericDraweeHierarchy> draweeView = getDraweeView();
 
-        if (draweeView == null || scale < mMinScale || scale > mMaxScale) {
+//        if (draweeView == null || scale < mMinScale || scale > mMaxScale) {
+//            return;
+//        }
+        //移除对缩小操作的屏蔽
+        if (draweeView == null || scale > mMaxScale) {
             return;
         }
 

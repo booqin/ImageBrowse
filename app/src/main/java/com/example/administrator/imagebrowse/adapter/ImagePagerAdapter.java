@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 /**
- * TODO
+ * 图片查看适配器
  * Created by Boqin on 2017/2/21.
  * Modified by Boqin
  *

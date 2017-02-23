@@ -18,7 +18,7 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import me.relex.photodraweeview.PhotoDraweeView;
 
 /**
- * TODO
+ * 单图查看Fragment
  * Created by Boqin on 2017/2/21.
  * Modified by Boqin
  *
@@ -91,9 +91,14 @@ public class ImageFragment extends Fragment{
         mDraweeView.setController(controller.build());
         mDragLayout.setViewPositionChangedListener(new DragLayout.ViewPositionChangedListener() {
             @Override
-            public void onViewPositionChanged(View changedView, int left, int top) {
-//                mDraweeView.setScale(0.5f);
-//                mDraweeView.invalidate();
+            public void onViewPositionChanged(View changedView, float scale) {
+                mDraweeView.setScale(scale);
+            }
+
+            @Override
+            public boolean onViewReleased() {
+                getActivity().finish();
+                return true;
             }
         });
     }
