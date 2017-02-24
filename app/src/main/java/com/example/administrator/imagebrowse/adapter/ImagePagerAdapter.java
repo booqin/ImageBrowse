@@ -21,10 +21,10 @@ public class ImagePagerAdapter extends FragmentPagerAdapter{
     List<Fragment> mFragments = new ArrayList<>();
 
 
-    public ImagePagerAdapter(FragmentManager fm, List<String> dataSets) {
+    public ImagePagerAdapter(FragmentManager fm, List<String> dataSets, ImageFragment.ViewPositionChangeListener viewPositionChangeListener) {
         super(fm);
         for (String dataSet : dataSets) {
-            mFragments.add(ImageFragment.newInstance(dataSet));
+            mFragments.add(ImageFragment.newInstance(dataSet, viewPositionChangeListener));
         }
     }
 

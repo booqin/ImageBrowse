@@ -4,7 +4,6 @@ import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.imagepipeline.image.ImageInfo;
 
+import me.relex.photodraweeview.OnScaleChangeListener;
 import me.relex.photodraweeview.PhotoDraweeView;
 
 /**
@@ -32,12 +32,14 @@ public class ImageFragment extends Fragment{
     private String mPath;
     private DragLayout mDragLayout;
     private PhotoDraweeView mDraweeView;
+    private ViewPositionChangeListener mViewPositionChangeListener;
 
-    public static ImageFragment newInstance(String path) {
+    public static ImageFragment newInstance(String path, ViewPositionChangeListener viewPositionChangeListener) {
         ImageFragment newFragment = new ImageFragment();
         Bundle bundle = new Bundle();
         bundle.putString(TAG, path);
         newFragment.setArguments(bundle);
+        newFragment.setViewPositionChangeListener(viewPositionChangeListener);
 
         //bundle还可以在每个标签里传送数据
 
@@ -62,9 +64,6 @@ public class ImageFragment extends Fragment{
                     ViewGroup container,
             @Nullable
                     Bundle savedInstanceState) {
-        //
-//        return LayoutInflater.from(container.getContext()).inflate(R.layout.item_image_drawee, container, false);
-//        return LayoutInflater.from(container.getContext()).inflate(R.layout.item_image_layout, container, false);
         mDragLayout = (DragLayout) LayoutInflater.from(container.getContext()).inflate(R.layout.item_image_drag_drawee, container, false);
 
         return mDragLayout;
@@ -90,10 +89,13 @@ public class ImageFragment extends Fragment{
             }
         });
         mDraweeView.setController(controller.build());
-        mDragLayout.setViewPositionChangedListener(new DragLayout.ViewPositionChangedListener() {
+        mDragLayout.setDragListener(new DragLayout.DragChangedListener() {
             @Override
             public void onViewPositionChanged(View changedView, float scale) {
                 mDraweeView.setScale(scale);
+                if (mViewPositionChangeListener!=null) {
+                    mViewPositionChangeListener.onViewPositionChanged(scale);
+                }
             }
 
             @Override
@@ -102,5 +104,26 @@ public class ImageFragment extends Fragment{
                 return true;
             }
         });
+        mDraweeView.setOnScaleChangeListener(new OnScaleChangeListener() {
+            @Override
+            public void onScaleChange(float scaleFactor, float focusX, float focusY) {
+                //屏蔽放大后的拖拽操作
+                if(mDraweeView.getScale()<1.05&&mDraweeView.getScale()>0.95){
+                    mDraweeView.setAllowParentInterceptOnEdge(true);
+                }else {
+                    mDraweeView.setAllowParentInterceptOnEdge(false);
+                }
+            }
+        });
+    }
+
+    public void setViewPositionChangeListener(
+            ViewPositionChangeListener viewPositionChangeListener) {
+        mViewPositionChangeListener = viewPositionChangeListener;
+    }
+
+    public interface ViewPositionChangeListener {
+
+        void onViewPositionChanged(float scale);
     }
 }
