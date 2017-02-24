@@ -8,15 +8,12 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="com.example.administrator.imagebrowse.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
-    <Button
-        android:id="@+id/image_bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="图片浏览"/>
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/dv"
+        android:layout_width="300dp"
+        android:layout_height="200dp" />
+
 </LinearLayout>

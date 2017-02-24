@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.administrator.imagebrowse.adapter.ImagePagerAdapter;
-import com.example.administrator.imagebrowse.fragment.ImageFragment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 /**
  * 图片浏览界面
@@ -26,6 +27,14 @@ public class BrowseActivity extends AppCompatActivity{
     private ViewPager mViewPager;
     private List<String> mUrls = new ArrayList<>();
 
+
+    public static void launch(Context activity, View transitionView) {
+        Intent intent = new Intent(activity, BrowseActivity.class);
+
+        // 这里指定了共享的视图元素
+        activity.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(
             @Nullable
@@ -37,6 +46,7 @@ public class BrowseActivity extends AppCompatActivity{
 
         ImagePagerAdapter imagePagerAdapter = new ImagePagerAdapter(getSupportFragmentManager(), mUrls);
         mViewPager.setAdapter(imagePagerAdapter);
+
     }
 
     private void initUrls(){

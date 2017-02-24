@@ -13,7 +13,7 @@
         </activity>
 
         <activity android:name=".BrowseActivity"
-            android:theme="@style/translucent"/>
+            android:theme="@style/notAnimation"/>
     </application>
 
 </manifest>
