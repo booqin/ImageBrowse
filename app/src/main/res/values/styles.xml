@@ -11,7 +11,6 @@
     <style name="translucent" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@color/translucent_background</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
     </style>
 
 </resources>
