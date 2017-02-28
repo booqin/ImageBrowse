@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ImageBrowse.iml" filepath="$PROJECT_DIR$/ImageBrowse.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/draglayout/draglayout.iml" filepath="$PROJECT_DIR$/draglayout/draglayout.iml" />
       <module fileurl="file://$PROJECT_DIR$/photodraweeview/photodraweeview.iml" filepath="$PROJECT_DIR$/photodraweeview/photodraweeview.iml" />
     </modules>
   </component>

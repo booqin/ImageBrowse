@@ -1,5 +1,13 @@
 package com.example.administrator.imagebrowse.fragment;
 
+import com.example.administrator.imagebrowse.R;
+import com.example.draglayout.DragChangedListener;
+import com.example.draglayout.DragLayout;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.imagepipeline.image.ImageInfo;
+
 import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,14 +15,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.administrator.imagebrowse.R;
-import com.example.administrator.imagebrowse.view.DragLayout;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
-import com.facebook.drawee.controller.BaseControllerListener;
-import com.facebook.imagepipeline.image.ImageInfo;
-
 import me.relex.photodraweeview.OnScaleChangeListener;
 import me.relex.photodraweeview.PhotoDraweeView;
 
@@ -89,7 +89,7 @@ public class ImageFragment extends Fragment{
             }
         });
         mDraweeView.setController(controller.build());
-        mDragLayout.setDragListener(new DragLayout.DragChangedListener() {
+        mDragLayout.setDragListener(new DragChangedListener() {
             @Override
             public void onViewPositionChanged(View changedView, float scale) {
                 mDraweeView.setScale(scale);
