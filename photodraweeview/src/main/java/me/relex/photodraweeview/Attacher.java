@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.ScrollerCompat;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,6 +39,7 @@ public class Attacher implements IAttacher, View.OnTouchListener, OnScaleDragGes
 
     private int mOrientation = HORIZONTAL;
 
+    //保存矩阵值
     private final float[] mMatrixValues = new float[9];
     private final RectF mDisplayRect = new RectF();
     private final Interpolator mZoomInterpolator = new AccelerateDecelerateInterpolator();
@@ -47,7 +49,9 @@ public class Attacher implements IAttacher, View.OnTouchListener, OnScaleDragGes
     private float mMaxScale = IAttacher.DEFAULT_MAX_SCALE;
     private long mZoomDuration = IAttacher.ZOOM_DURATION;
 
+    //缩放管理
     private ScaleDragDetector mScaleDragDetector;
+    //手势检测
     private GestureDetectorCompat mGestureDetector;
 
     private boolean mBlockParentIntercept = false;
@@ -55,14 +59,18 @@ public class Attacher implements IAttacher, View.OnTouchListener, OnScaleDragGes
     private int mScrollEdgeX = EDGE_BOTH;
     private int mScrollEdgeY = EDGE_BOTH;
 
+    //矩阵
     private final Matrix mMatrix = new Matrix();
     private int mImageInfoHeight = -1, mImageInfoWidth = -1;
     private FlingRunnable mCurrentFlingRunnable;
     private WeakReference<DraweeView<GenericDraweeHierarchy>> mDraweeView;
 
+    //接口
+    //单点触摸
     private OnPhotoTapListener mPhotoTapListener;
     private OnViewTapListener mViewTapListener;
     private View.OnLongClickListener mLongClickListener;
+    //比例变化
     private OnScaleChangeListener mScaleChangeListener;
 
     public Attacher(DraweeView<GenericDraweeHierarchy> draweeView) {
@@ -70,6 +78,7 @@ public class Attacher implements IAttacher, View.OnTouchListener, OnScaleDragGes
         draweeView.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
         draweeView.setOnTouchListener(this);
         mScaleDragDetector = new ScaleDragDetector(draweeView.getContext(), this);
+
         mGestureDetector = new GestureDetectorCompat(draweeView.getContext(),
                 new GestureDetector.SimpleOnGestureListener() {
                     @Override public void onLongPress(MotionEvent e) {
@@ -79,6 +88,7 @@ public class Attacher implements IAttacher, View.OnTouchListener, OnScaleDragGes
                         }
                     }
                 });
+        //默认双点手势处理
         mGestureDetector.setOnDoubleTapListener(new DefaultOnDoubleTapListener(this));
     }
 
@@ -420,6 +430,7 @@ public class Attacher implements IAttacher, View.OnTouchListener, OnScaleDragGes
         boolean wasScaling = mScaleDragDetector.isScaling();
         boolean wasDragging = mScaleDragDetector.isDragging();
 
+        //比例控制工具
         boolean handled = mScaleDragDetector.onTouchEvent(event);
 
         boolean noScale = !wasScaling && !mScaleDragDetector.isScaling();
@@ -433,6 +444,7 @@ public class Attacher implements IAttacher, View.OnTouchListener, OnScaleDragGes
         return handled;
     }
 
+    //
     private class AnimatedZoomRunnable implements Runnable {
         private final float mFocalX, mFocalY;
         private final long mStartTime;

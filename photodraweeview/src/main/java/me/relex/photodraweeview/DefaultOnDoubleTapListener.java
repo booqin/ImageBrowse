@@ -45,7 +45,7 @@ public class DefaultOnDoubleTapListener implements GestureDetector.OnDoubleTapLi
 
         return false;
     }
-
+    //双击事件处理
     @Override public boolean onDoubleTap(MotionEvent event) {
         if (mAttacher == null) {
             return false;
