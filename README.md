@@ -3,7 +3,7 @@
 # 功能点
 　　先看以下朋友圈的图片查看功能：
 
-![circle](http://172.16.1.15:8888/files/1487935590416circle.gif)
+![circle](https://github.com/booqin/ImageBrowse/raw/master/capture/circle.gif)
 
 　　主要功能点有以下三个
 - 图片拖拽时缩小，背景透明，一定阈值时关闭该页
@@ -12,7 +12,7 @@
 
 实现以上功能，我们需要一个透明的Activity，来显示完整的图片，拖拽功能通过继承一个LinearLayout来实现一个DragLayout，在该类完成了对子类的拖拽管理，图片的缩放功能基于第三方开源[PhotoDraweeView](https://github.com/ongakuer/PhotoDraweeView)，而整个图片加载框架使用Fresco完成。
 
-![draglayout](http://172.16.1.15:8888/files/1487935600104draglayout.gif)
+![draglayout](https://github.com/booqin/ImageBrowse/raw/master/capture/draglayout.gif)
 
 ## 设置透明Activity
 　　通过在res中的style文件下添加透明主题
