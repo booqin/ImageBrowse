@@ -93,9 +93,12 @@ public class ScaleDragDetector implements ScaleGestureDetector.OnScaleGestureLis
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
+        //数据传递到OnScaleGestureListener接口
         mScaleDetector.onTouchEvent(ev);
         final int action = MotionEventCompat.getActionMasked(ev);
+        //获取触摸点的位置，多点取第一个点位置
         onTouchActivePointer(action, ev);
+        //对手势进行拆解，分配到OnScaleDragGestureListener里的相应方法中处理
         onTouchDragEvent(action, ev);
         return true;
     }
@@ -150,6 +153,7 @@ public class ScaleDragDetector implements ScaleGestureDetector.OnScaleGestureLis
                 }
 
                 if (mIsDragging) {
+                    //拖拽
                     mScaleDragGestureListener.onDrag(dx, dy);
                     mLastTouchX = x;
                     mLastTouchY = y;
@@ -180,7 +184,7 @@ public class ScaleDragDetector implements ScaleGestureDetector.OnScaleGestureLis
 
                         final float vX = mVelocityTracker.getXVelocity(), vY =
                                 mVelocityTracker.getYVelocity();
-
+                        //快速滑动
                         if (Math.max(Math.abs(vX), Math.abs(vY)) >= mMinimumVelocity) {
                             mScaleDragGestureListener.onFling(mLastTouchX, mLastTouchY, -vX, -vY);
                         }

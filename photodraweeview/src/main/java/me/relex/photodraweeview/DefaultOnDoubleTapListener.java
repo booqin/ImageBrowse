@@ -13,7 +13,7 @@ public class DefaultOnDoubleTapListener implements GestureDetector.OnDoubleTapLi
     public DefaultOnDoubleTapListener(Attacher attacher) {
         setPhotoDraweeViewAttacher(attacher);
     }
-
+    //单击事件
     @Override public boolean onSingleTapConfirmed(MotionEvent e) {
 
         if (mAttacher == null) {
