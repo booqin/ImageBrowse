@@ -101,6 +101,7 @@ public class ImageFragment extends Fragment{
             @Override
             public boolean onViewReleased() {
                 getActivity().finish();
+                getActivity().overridePendingTransition(0, 0);
                 return true;
             }
         });

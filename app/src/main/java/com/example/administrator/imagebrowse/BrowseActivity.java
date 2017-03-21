@@ -32,8 +32,10 @@ public class BrowseActivity extends AppCompatActivity{
 
 
     public static void launch(Context activity, View transitionView) {
-        Intent intent = new Intent(activity, BrowseActivity.class);
-
+//        Intent intent = new Intent(activity, BrowseActivity.class);
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.setClass(activity, BrowseActivity.class);
         // 这里指定了共享的视图元素
         activity.startActivity(intent);
     }

@@ -110,7 +110,7 @@ public class DragLayout extends LinearLayout {
             public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
                 super.onViewPositionChanged(changedView, left, top, dx, dy);
                 if (mDragChangedListener != null) {
-                    mScale = 1 - (float) (top - mAutoBackOriginPos.y) / mTotalHeight;
+                    mScale = 1 - (float) (top - mAutoBackOriginPos.y)/ mTotalHeight;
                     if (mDragChangedListener != null) {
                         mDragChangedListener.onViewPositionChanged(changedView, mScale > 1 ? 1 : mScale);
                     }
