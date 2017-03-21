@@ -1,8 +1,8 @@
-package com.example.administrator.imagebrowse.fragment;
+package com.example.draglayout.fragment;
 
-import com.example.administrator.imagebrowse.R;
 import com.example.draglayout.DragChangedListener;
 import com.example.draglayout.DragLayout;
+import com.example.draglayout.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;

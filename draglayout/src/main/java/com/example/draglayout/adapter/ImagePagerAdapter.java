@@ -1,9 +1,9 @@
-package com.example.administrator.imagebrowse.adapter;
+package com.example.draglayout.adapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.administrator.imagebrowse.fragment.ImageFragment;
+import com.example.draglayout.fragment.ImageFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

@@ -1,5 +1,6 @@
 package com.example.administrator.imagebrowse;
 
+import com.example.draglayout.activity.BrowseActivity;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import android.os.Bundle;
@@ -7,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
+
+
+    private static final String[] URLS = {"http://ocvkuozgf.bkt.clouddn.com/14599544138261.png", "http://ocvkuozgf.bkt.clouddn.com/AutoLayout.png","http://ocvkuozgf.bkt.clouddn.com/LayoutParams.png","http://ocvkuozgf.bkt.clouddn.com/rect.png"};
 
     private SimpleDraweeView mSimpleDraweeView;
 
@@ -22,9 +26,7 @@ public class MainActivity extends AppCompatActivity {
         mSimpleDraweeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent i = new Intent(v.getContext(), BrowseActivity.class);
-//                startActivity(i);
-                BrowseActivity.launch(MainActivity.this, mSimpleDraweeView);
+                BrowseActivity.launch(MainActivity.this, mSimpleDraweeView, URLS);
             }
         });
     }

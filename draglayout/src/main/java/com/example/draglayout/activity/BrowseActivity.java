@@ -1,10 +1,11 @@
-package com.example.administrator.imagebrowse;
+package com.example.draglayout.activity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.administrator.imagebrowse.adapter.ImagePagerAdapter;
-import com.example.administrator.imagebrowse.fragment.ImageFragment;
+import com.example.draglayout.R;
+import com.example.draglayout.adapter.ImagePagerAdapter;
+import com.example.draglayout.fragment.ImageFragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,20 +25,21 @@ import android.widget.LinearLayout;
  */
 public class BrowseActivity extends AppCompatActivity{
 
-    private static final String[] URLS = {"http://ocvkuozgf.bkt.clouddn.com/14599544138261.png", "http://ocvkuozgf.bkt.clouddn.com/AutoLayout.png","http://ocvkuozgf.bkt.clouddn.com/LayoutParams.png","http://ocvkuozgf.bkt.clouddn.com/rect.png"};
+    private static String[] URLS;
 
     private LinearLayout mLayout;
     private ViewPager mViewPager;
     private List<String> mUrls = new ArrayList<>();
 
 
-    public static void launch(Context activity, View transitionView) {
-//        Intent intent = new Intent(activity, BrowseActivity.class);
+
+    public static void launch(Context activity, View transitionView, String[] urls) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.setClass(activity, BrowseActivity.class);
         // 这里指定了共享的视图元素
         activity.startActivity(intent);
+        URLS = urls;
     }
 
     @Override
@@ -45,6 +47,7 @@ public class BrowseActivity extends AppCompatActivity{
             @Nullable
                     Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.translucent);
         setContentView(R.layout.activity_image_browse);
         initUrls();
         mLayout = (LinearLayout) findViewById(R.id.ll);
