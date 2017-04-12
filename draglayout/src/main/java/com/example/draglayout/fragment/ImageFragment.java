@@ -9,12 +9,15 @@ import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.imagepipeline.image.ImageInfo;
 
 import android.graphics.drawable.Animatable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.transition.ChangeBounds;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import me.relex.photodraweeview.OnScaleChangeListener;
 import me.relex.photodraweeview.PhotoDraweeView;
 
@@ -41,8 +44,6 @@ public class ImageFragment extends Fragment{
         newFragment.setArguments(bundle);
         newFragment.setViewPositionChangeListener(viewPositionChangeListener);
 
-        //bundle还可以在每个标签里传送数据
-
         return newFragment;
 
     }
@@ -52,6 +53,7 @@ public class ImageFragment extends Fragment{
             @Nullable
                     Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Bundle args = getArguments();
         mPath = args != null ? args.getString(TAG) : "";
 
@@ -65,7 +67,16 @@ public class ImageFragment extends Fragment{
             @Nullable
                     Bundle savedInstanceState) {
         mDragLayout = (DragLayout) LayoutInflater.from(container.getContext()).inflate(R.layout.item_image_drag_drawee, container, false);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mDragLayout.setTransitionName(mPath);
+        }
+        mDragLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                mDragLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                return true;
+            }
+        });
         return mDragLayout;
     }
 
@@ -100,8 +111,7 @@ public class ImageFragment extends Fragment{
 
             @Override
             public boolean onViewReleased() {
-                getActivity().finish();
-                getActivity().overridePendingTransition(0, 0);
+                getActivity().onBackPressed();
                 return true;
             }
         });
@@ -118,13 +128,19 @@ public class ImageFragment extends Fragment{
         });
     }
 
+    /**
+     * 设置位置监听
+     */
     public void setViewPositionChangeListener(
             ViewPositionChangeListener viewPositionChangeListener) {
         mViewPositionChangeListener = viewPositionChangeListener;
     }
 
     public interface ViewPositionChangeListener {
-
+        /**
+         * 当位置发生变化时回调
+         * @param scale
+         */
         void onViewPositionChanged(float scale);
     }
 }

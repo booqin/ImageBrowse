@@ -37,4 +37,6 @@ public class ImagePagerAdapter extends FragmentPagerAdapter{
     public int getCount() {
         return mFragments.size();
     }
+
+
 }

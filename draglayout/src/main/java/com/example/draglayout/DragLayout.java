@@ -104,6 +104,9 @@ public class DragLayout extends LinearLayout {
         }
     }
 
+    /**
+     * 初始化设置
+     */
     public void init(final Context context) {
         mDragHelper = ViewDragHelper.create(this, 1.0f, new ViewDragHelper.Callback() {
             @Override

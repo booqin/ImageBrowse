@@ -3,7 +3,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <application android:allowBackup="true" android:icon="@mipmap/ic_crab" android:label="@string/app_name" android:name=".BrowseApplication" android:supportsRtl="true" android:theme="@style/AppTheme">
+    <application android:allowBackup="true" android:icon="@mipmap/ic_crab" android:label="@string/app_name" android:name=".BrowseApplication" android:supportsRtl="true"
+        android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -13,6 +14,11 @@
         </activity>
 
         <activity android:name="com.example.draglayout.activity.BrowseActivity"
+            android:theme="@style/translucent"/>
+        <activity android:name=".ImageActivity"
+            android:theme="@style/translucent"/>
+
+        <activity android:name=".PhotoDraweeViewActivity"
             android:theme="@style/translucent"/>
     </application>
 
