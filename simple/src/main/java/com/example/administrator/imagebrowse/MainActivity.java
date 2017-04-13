@@ -14,7 +14,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String[] URLS = {"http://ocvkuozgf.bkt.clouddn.com/14599544138261.png", "http://ocvkuozgf.bkt.clouddn.com/AutoLayout.png","http://ocvkuozgf.bkt.clouddn.com/LayoutParams.png","http://ocvkuozgf.bkt.clouddn.com/rect.png"};
 
     private SimpleDraweeView mSimpleDraweeView;
-//    private ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

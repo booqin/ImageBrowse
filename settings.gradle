@@ -1,1 +1,1 @@
-include ':app', ':photodraweeview', ':draglayout'
+include ':simple', ':photodraweeview', ':draglayout'
