@@ -89,5 +89,7 @@
 ```
 这样我们就可以在拖拽的过程中缩小图片了。
 
-## 转场动画
-　　todo
+## 共享元素动画
+　　共享元素是Android5.0后的新特性，通过该特性可以在多个Activity切换时共享相同的View，改善用户体验。  
+　　在ImageBrowse中，图片框架使用的是Fresco，其官方文档中已经明确指出不支持共享元素中的ChangeImageTransform变化，因为Drawee维护着自己的Matrix，不过Fresco可以使用ChangeBounds，通过改变边界，同时自适应图片完成共享动画的功能。  
+　　由于涉及到ViewPager以及在ViewPager中加载Fragment，这就导致了在使用共享元素无法达到预期的效果，因为共享元素的动画的执行是在Activity生命周期里非常靠前的一个操作，这就可能出现目标View还未被布置到view hierarchy中。Android提供了延时共享元素功能，通过在开始位置设置postponeEnterTransition()，以及在需要的位置开启startPostponedEnterTransition()即可。
