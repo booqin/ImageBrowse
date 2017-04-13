@@ -5,7 +5,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import android.app.Application;
 
 /**
- * TODO
+ * Demo的Application，初始化Fresco
  * Created by Boqin on 2017/2/21.
  * Modified by Boqin
  *

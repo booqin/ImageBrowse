@@ -22,10 +22,8 @@ android {
 }
 
 dependencies {
-    provided 'com.facebook.fresco:fresco:1.0.0'
+    provided "com.facebook.fresco:fresco:$FRESCO_VERSION"
     provided 'com.android.support:support-annotations:25.1.0'
     provided 'com.android.support:support-core-ui:25.1.0'
 }
-
-//apply from: "upload-jcenter.gradle"
 
