@@ -11,6 +11,7 @@ import com.facebook.drawee.view.DraweeTransition;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -111,5 +112,10 @@ public class BrowseActivity extends AppCompatActivity{
         for (String url : URLS) {
             mUrls.add(url);
         }
+    }
+
+    @Override
+    public void setExitSharedElementCallback(SharedElementCallback callback) {
+        super.setExitSharedElementCallback(callback);
     }
 }

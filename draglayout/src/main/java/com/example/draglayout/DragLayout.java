@@ -68,7 +68,13 @@ public class DragLayout extends LinearLayout {
         if (action == MotionEvent.ACTION_DOWN) {
             mDragHelper.processTouchEvent(ev);
         }
-        return mGestureDetector.onTouchEvent(ev) ;
+        try {
+            return mGestureDetector.onTouchEvent(ev) ;
+        } catch (IllegalArgumentException e) {
+            //uncomment if you really want to see these errors
+            //e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
