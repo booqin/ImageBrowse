@@ -13,9 +13,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.example.draglayout.activity.BrowseActivity"
-            android:theme="@style/translucent"/>
-
     </application>
 
 </manifest>

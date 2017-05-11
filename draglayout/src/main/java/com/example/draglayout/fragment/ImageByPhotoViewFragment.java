@@ -10,4 +10,6 @@ import android.support.v4.app.Fragment;
  * @Version
  */
 public class ImageByPhotoViewFragment extends Fragment {
+
+
 }
