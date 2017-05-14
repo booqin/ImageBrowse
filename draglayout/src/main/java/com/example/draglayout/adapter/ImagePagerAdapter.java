@@ -1,13 +1,13 @@
 package com.example.draglayout.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.example.draglayout.fragment.ImageFragment;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.example.draglayout.fragment.ImageByPhotoViewFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 图片查看适配器
@@ -21,10 +21,10 @@ public class ImagePagerAdapter extends FragmentPagerAdapter{
     List<Fragment> mFragments = new ArrayList<>();
 
 
-    public ImagePagerAdapter(FragmentManager fm, List<String> dataSets, ImageFragment.ViewPositionChangeListener viewPositionChangeListener) {
+    public ImagePagerAdapter(FragmentManager fm, List<String> dataSets, ImageByPhotoViewFragment.ViewPositionChangeListener viewPositionChangeListener) {
         super(fm);
         for (String dataSet : dataSets) {
-            mFragments.add(ImageFragment.newInstance(dataSet, viewPositionChangeListener));
+            mFragments.add(ImageByPhotoViewFragment.newInstance(dataSet, viewPositionChangeListener));
         }
     }
 

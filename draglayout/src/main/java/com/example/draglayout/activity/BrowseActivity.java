@@ -1,14 +1,5 @@
 package com.example.draglayout.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.example.draglayout.R;
-import com.example.draglayout.adapter.ImagePagerAdapter;
-import com.example.draglayout.fragment.ImageFragment;
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.view.DraweeTransition;
-
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
@@ -24,6 +15,13 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.LinearLayout;
+
+import com.example.draglayout.R;
+import com.example.draglayout.adapter.ImagePagerAdapter;
+import com.example.draglayout.fragment.ImageByPhotoViewFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 图片浏览界面
@@ -74,7 +72,6 @@ public class BrowseActivity extends AppCompatActivity{
 
             TransitionSet transitionSet = new TransitionSet();
             transitionSet.addTransition(new ChangeBounds());
-            transitionSet.addTransition(new DraweeTransition(ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
             getWindow().setSharedElementEnterTransition(transitionSet);
             postponeEnterTransition();
         }
@@ -86,7 +83,7 @@ public class BrowseActivity extends AppCompatActivity{
         mViewPager = (ViewPager) findViewById(R.id.vp);
 
         ImagePagerAdapter imagePagerAdapter = new ImagePagerAdapter(getSupportFragmentManager(), mUrls,
-                new ImageFragment.ViewPositionChangeListener() {
+                new ImageByPhotoViewFragment.ViewPositionChangeListener() {
                     @Override
                     public void onViewPositionChanged(float scale) {
                         mLayout.setAlpha(scale);
