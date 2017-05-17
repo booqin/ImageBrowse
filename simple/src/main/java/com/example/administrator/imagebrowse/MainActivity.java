@@ -1,6 +1,5 @@
 package com.example.administrator.imagebrowse;
 
-import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.example.draglayout.activity.BrowseActivity;
 
@@ -25,8 +24,6 @@ public class MainActivity extends AppCompatActivity{
     private ImageView mImageView;
     private Button mButton;
 
-    private DrawableRequestBuilder<?> thumb;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +36,7 @@ public class MainActivity extends AppCompatActivity{
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BrowseActivity.launch(MainActivity.this, mImageView, URLS);
+                BrowseActivity.launch(MainActivity.this, mImageView, URLS, 1, "http://ocvkuozgf.bkt.clouddn.com/14599544138261.png");
             }
         });
 
@@ -57,8 +54,8 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        thumb = Glide.with(this)
-                .load("http://ocvkuozgf.bkt.clouddn.com/14599544138261.png");
-        thumb.into(mImageView);
+        Glide.with(this)
+                .load("http://ocvkuozgf.bkt.clouddn.com/AutoLayout.png")
+                .into(mImageView);
     }
 }

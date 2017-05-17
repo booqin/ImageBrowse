@@ -9,7 +9,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/draglayout" />
-            <option value="$PROJECT_DIR$/photodraweeview" />
             <option value="$PROJECT_DIR$/simple" />
           </set>
         </option>

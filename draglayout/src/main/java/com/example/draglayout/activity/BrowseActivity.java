@@ -34,6 +34,7 @@ public class BrowseActivity extends AppCompatActivity{
 
     public static final String TAG_W = "W";
     public static final String TAG_H = "H";
+    public static final String TAG_POSITION = "POSITION";
     private static String[] URLS;
 
     private LinearLayout mLayout;
@@ -44,22 +45,27 @@ public class BrowseActivity extends AppCompatActivity{
     private int mTransitionViewWidth;
     private int mTransitionViewHeight;
 
+    private int mPosition;
+
 
     /**
      * 启动浏览界面
      * @param activity
      * @param transitionView 目标View，在Version大于21的时候实现共享元素
      * @param urls 图片链接
+     * @param position 当前显示位置
+     * @param thumbnailUrl 缩略图
      */
-    public static void launch(Activity activity, ImageView transitionView, String[] urls) {
+    public static void launch(Activity activity, ImageView transitionView, String[] urls, int position, String thumbnailUrl) {
         Intent intent = new Intent();
         intent.setClass(activity, BrowseActivity.class);
         // 这里指定了共享的视图元素
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptions options = ActivityOptions
-                    .makeSceneTransitionAnimation(activity, transitionView, urls[0]);
+                    .makeSceneTransitionAnimation(activity, transitionView, urls[position]);
             intent.putExtra(TAG_W, transitionView.getWidth());
             intent.putExtra(TAG_H, transitionView.getHeight());
+            intent.putExtra(TAG_POSITION, position);
             activity.startActivity(intent, options.toBundle());
         }else {
             activity.startActivity(intent);
@@ -85,6 +91,7 @@ public class BrowseActivity extends AppCompatActivity{
 
             mTransitionViewWidth = getIntent().getIntExtra(TAG_W, -1);
             mTransitionViewHeight = getIntent().getIntExtra(TAG_H, -1);
+            mPosition = getIntent().getIntExtra(TAG_POSITION, 0);
         }
 
         setTheme(R.style.translucent);
@@ -112,6 +119,7 @@ public class BrowseActivity extends AppCompatActivity{
                 return true;
             }
         });
+        mViewPager.setCurrentItem(mPosition);
     }
 
     /**
