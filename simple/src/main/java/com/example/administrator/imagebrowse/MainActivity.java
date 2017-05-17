@@ -1,11 +1,13 @@
 package com.example.administrator.imagebrowse;
 
+import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.example.draglayout.activity.BrowseActivity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 /**
@@ -21,6 +23,9 @@ public class MainActivity extends AppCompatActivity{
     private static final String[] URLS = {"http://ocvkuozgf.bkt.clouddn.com/14599544138261.png", "http://ocvkuozgf.bkt.clouddn.com/AutoLayout.png","http://ocvkuozgf.bkt.clouddn.com/LayoutParams.png","http://ocvkuozgf.bkt.clouddn.com/rect.png"};
 
     private ImageView mImageView;
+    private Button mButton;
+
+    private DrawableRequestBuilder<?> thumb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,8 @@ public class MainActivity extends AppCompatActivity{
 
         mImageView = (ImageView) findViewById(R.id.iv);
 
+        mButton = (Button) findViewById(R.id.button);
+
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,6 +43,22 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        Glide.with(this).load("http://ocvkuozgf.bkt.clouddn.com/14599544138261.png").into(mImageView);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Glide.get(MainActivity.this).clearMemory();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.get(MainActivity.this).clearDiskCache();
+                    }
+                }).start();
+
+            }
+        });
+
+        thumb = Glide.with(this)
+                .load("http://ocvkuozgf.bkt.clouddn.com/14599544138261.png");
+        thumb.into(mImageView);
     }
 }

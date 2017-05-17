@@ -1,5 +1,12 @@
 package com.example.draglayout.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.example.draglayout.R;
+import com.example.draglayout.adapter.ImagePagerAdapter;
+import com.example.draglayout.fragment.ImageByPhotoViewFragment;
+
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
@@ -11,17 +18,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.ChangeBounds;
 import android.transition.TransitionSet;
-import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import com.example.draglayout.R;
-import com.example.draglayout.adapter.ImagePagerAdapter;
-import com.example.draglayout.fragment.ImageByPhotoViewFragment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 图片浏览界面
@@ -32,11 +32,17 @@ import java.util.List;
  */
 public class BrowseActivity extends AppCompatActivity{
 
+    public static final String TAG_W = "W";
+    public static final String TAG_H = "H";
     private static String[] URLS;
 
     private LinearLayout mLayout;
     private ViewPager mViewPager;
     private List<String> mUrls = new ArrayList<>();
+
+    /** 基准View的宽高值 */
+    private int mTransitionViewWidth;
+    private int mTransitionViewHeight;
 
 
     /**
@@ -45,13 +51,15 @@ public class BrowseActivity extends AppCompatActivity{
      * @param transitionView 目标View，在Version大于21的时候实现共享元素
      * @param urls 图片链接
      */
-    public static void launch(Activity activity, View transitionView, String[] urls) {
+    public static void launch(Activity activity, ImageView transitionView, String[] urls) {
         Intent intent = new Intent();
         intent.setClass(activity, BrowseActivity.class);
         // 这里指定了共享的视图元素
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptions options = ActivityOptions
                     .makeSceneTransitionAnimation(activity, transitionView, urls[0]);
+            intent.putExtra(TAG_W, transitionView.getWidth());
+            intent.putExtra(TAG_H, transitionView.getHeight());
             activity.startActivity(intent, options.toBundle());
         }else {
             activity.startActivity(intent);
@@ -74,6 +82,9 @@ public class BrowseActivity extends AppCompatActivity{
             transitionSet.addTransition(new ChangeBounds());
             getWindow().setSharedElementEnterTransition(transitionSet);
             postponeEnterTransition();
+
+            mTransitionViewWidth = getIntent().getIntExtra(TAG_W, -1);
+            mTransitionViewHeight = getIntent().getIntExtra(TAG_H, -1);
         }
 
         setTheme(R.style.translucent);
@@ -82,13 +93,14 @@ public class BrowseActivity extends AppCompatActivity{
         mLayout = (LinearLayout) findViewById(R.id.ll);
         mViewPager = (ViewPager) findViewById(R.id.vp);
 
-        ImagePagerAdapter imagePagerAdapter = new ImagePagerAdapter(getSupportFragmentManager(), mUrls,
+        ImagePagerAdapter imagePagerAdapter = new ImagePagerAdapter(getSupportFragmentManager(), mUrls, mTransitionViewWidth, mTransitionViewHeight,
                 new ImageByPhotoViewFragment.ViewPositionChangeListener() {
                     @Override
                     public void onViewPositionChanged(float scale) {
                         mLayout.setAlpha(scale);
                     }
                 });
+
         mViewPager.setAdapter(imagePagerAdapter);
         mViewPager.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
