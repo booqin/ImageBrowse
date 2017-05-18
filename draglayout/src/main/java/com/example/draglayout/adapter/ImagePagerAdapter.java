@@ -2,8 +2,10 @@ package com.example.draglayout.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
+import android.view.View;
 
+import com.example.draglayout.fragment.BaseTransitionFragment;
 import com.example.draglayout.fragment.ImageByPhotoViewFragment;
 
 import java.util.ArrayList;
@@ -16,9 +18,9 @@ import java.util.List;
  *
  * @Version
  */
-public class ImagePagerAdapter extends FragmentPagerAdapter{
+public class ImagePagerAdapter extends BaseTransitionPagerAdapter {
 
-    List<Fragment> mFragments = new ArrayList<>();
+    List<BaseTransitionFragment> mFragments = new ArrayList<>();
 
     public ImagePagerAdapter(FragmentManager fm, List<String> dataSets, int w, int h, ImageByPhotoViewFragment.ViewPositionChangeListener viewPositionChangeListener) {
         super(fm);
@@ -37,5 +39,23 @@ public class ImagePagerAdapter extends FragmentPagerAdapter{
         return mFragments.size();
     }
 
+    @Override
+    public String getTransitionName(int position) {
+        if (position < getCount()) {
+            Log.d("BQ", "-----------------------------------");
+            Log.d("BQ", ""+position);
+            for (BaseTransitionFragment fragment : mFragments) {
+                Log.d("BQ", ""+fragment.getTransitionName());
+            }
+            Log.d("BQ", "-----------------------------------");
+            Log.d("BQ", mFragments.get(position).getTransitionName());
+            return mFragments.get(position).getTransitionName();
+        }
+        return null;
+    }
 
+    @Override
+    public View getTransitionView(int position) {
+        return mFragments.get(position).getTransitionView();
+    }
 }

@@ -12,7 +12,6 @@ import com.github.chrisbanes.photoview.PhotoView;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,7 @@ import android.view.ViewTreeObserver;
  *
  * @Version
  */
-public class ImageByPhotoViewFragment extends Fragment {
+public class ImageByPhotoViewFragment extends BaseTransitionFragment {
 
     private static final String TAG = ImageByPhotoViewFragment.class.getSimpleName();
 
@@ -77,9 +76,6 @@ public class ImageByPhotoViewFragment extends Fragment {
             @Nullable
                     Bundle savedInstanceState) {
         mDragLayout = (DragLayout) LayoutInflater.from(getContext()).inflate(R.layout.fragment_image_drag_photo, container, false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mDragLayout.setTransitionName(mPath);
-        }
         mDragLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
@@ -97,7 +93,9 @@ public class ImageByPhotoViewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mPhotoView = (PhotoView) view.findViewById(R.id.photo_view);
         mPhotoView.setScaleLevels(0.5f, 1f, 2f);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mPhotoView.setTransitionName(mPath);
+        }
         setGlide();
 
         mDragLayout.setDragListener(new DragChangedListener() {
@@ -143,12 +141,22 @@ public class ImageByPhotoViewFragment extends Fragment {
         mViewPositionChangeListener = viewPositionChangeListener;
     }
 
+    @Override
+    public String getTransitionName() {
+        return mPath;
+    }
+
+    @Override
+    public View getTransitionView() {
+        return mPhotoView;
+    }
+
     private void setGlide() {
         //获取缩略图，使用指定大小，同时关闭动画，这样才能利用ActivityA中的缓存图达到元素共享的效果
-        if (mOverrideWidth>0&&mOverrideHeight>0) {
+        if (mOverrideWidth > 0 && mOverrideHeight > 0) {
             DrawableRequestBuilder<?> thumb = Glide.with(this).load(mPath).dontAnimate().override(mOverrideWidth, mOverrideHeight);
             Glide.with(this).load(mPath).dontAnimate().thumbnail(thumb).into(mPhotoView);
-        }else {
+        } else {
             Glide.with(this).load(mPath).into(mPhotoView);
         }
 

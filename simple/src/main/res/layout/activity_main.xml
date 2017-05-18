@@ -12,7 +12,7 @@
     tools:context="com.example.administrator.imagebrowse.MainActivity">
 
     <ImageView
-        android:id="@+id/iv"
+        android:id="@+id/iv1"
         android:layout_width="100dp"
         android:layout_height="50dp" />
 
@@ -21,5 +21,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="清除缓存"/>
+
+    <ImageView
+        android:id="@+id/iv2"
+        android:layout_width="100dp"
+        android:layout_height="50dp" />
+
+
 
 </LinearLayout>

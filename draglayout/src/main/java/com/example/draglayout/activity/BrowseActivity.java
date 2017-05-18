@@ -2,6 +2,7 @@ package com.example.draglayout.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.example.draglayout.R;
 import com.example.draglayout.adapter.ImagePagerAdapter;
@@ -17,7 +18,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.ChangeBounds;
+import android.transition.ChangeImageTransform;
 import android.transition.TransitionSet;
+import android.util.Log;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
@@ -46,7 +50,7 @@ public class BrowseActivity extends AppCompatActivity{
     private int mTransitionViewHeight;
 
     private int mPosition;
-
+    private ImagePagerAdapter mImagePagerAdapter;
 
     /**
      * 启动浏览界面
@@ -86,6 +90,7 @@ public class BrowseActivity extends AppCompatActivity{
 
             TransitionSet transitionSet = new TransitionSet();
             transitionSet.addTransition(new ChangeBounds());
+            transitionSet.addTransition(new ChangeImageTransform());
             getWindow().setSharedElementEnterTransition(transitionSet);
             postponeEnterTransition();
 
@@ -100,7 +105,7 @@ public class BrowseActivity extends AppCompatActivity{
         mLayout = (LinearLayout) findViewById(R.id.ll);
         mViewPager = (ViewPager) findViewById(R.id.vp);
 
-        ImagePagerAdapter imagePagerAdapter = new ImagePagerAdapter(getSupportFragmentManager(), mUrls, mTransitionViewWidth, mTransitionViewHeight,
+        mImagePagerAdapter = new ImagePagerAdapter(getSupportFragmentManager(), mUrls, mTransitionViewWidth, mTransitionViewHeight,
                 new ImageByPhotoViewFragment.ViewPositionChangeListener() {
                     @Override
                     public void onViewPositionChanged(float scale) {
@@ -108,7 +113,7 @@ public class BrowseActivity extends AppCompatActivity{
                     }
                 });
 
-        mViewPager.setAdapter(imagePagerAdapter);
+        mViewPager.setAdapter(mImagePagerAdapter);
         mViewPager.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
@@ -120,6 +125,21 @@ public class BrowseActivity extends AppCompatActivity{
             }
         });
         mViewPager.setCurrentItem(mPosition);
+
+        setEnterSharedElementCallback(new android.support.v4.app.SharedElementCallback() {
+
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                super.onMapSharedElements(names, sharedElements);
+                Log.d("BQ", ""+mViewPager.getCurrentItem());
+                Log.d("BQ", ""+names.size());
+                Log.d("BQ", ""+names.get(0));
+                Log.d("BQ", ""+sharedElements.size());
+                Log.d("BQ", ""+sharedElements.toString());
+                sharedElements.clear();
+                sharedElements.put(mImagePagerAdapter.getTransitionName(mViewPager.getCurrentItem()), mImagePagerAdapter.getTransitionView(mViewPager.getCurrentItem()));
+            }
+        });
     }
 
     /**
@@ -129,10 +149,5 @@ public class BrowseActivity extends AppCompatActivity{
         for (String url : URLS) {
             mUrls.add(url);
         }
-    }
-
-    @Override
-    public void setExitSharedElementCallback(SharedElementCallback callback) {
-        super.setExitSharedElementCallback(callback);
     }
 }
