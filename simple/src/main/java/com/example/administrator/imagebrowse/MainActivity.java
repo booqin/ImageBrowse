@@ -1,18 +1,15 @@
 package com.example.administrator.imagebrowse;
 
-import java.util.List;
-import java.util.Map;
-
-import com.bumptech.glide.Glide;
-import com.example.draglayout.activity.BrowseActivity;
-
 import android.os.Bundle;
-import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.example.draglayout.UpdateSharedElementListener;
+import com.example.draglayout.activity.BrowseActivity;
 
 /**
  * TODO
@@ -43,7 +40,13 @@ public class MainActivity extends AppCompatActivity{
         mImageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BrowseActivity.launch(MainActivity.this, mImageView1, URLS, 1, "http://ocvkuozgf.bkt.clouddn.com/AutoLayout.png");
+//                BrowseActivity.launch(MainActivity.this, mImageView1, URLS, 1, "http://ocvkuozgf.bkt.clouddn.com/AutoLayout.png");
+                BrowseActivity.launchFromList(MainActivity.this, mImageView1, URLS, 1, new UpdateSharedElementListener() {
+                    @Override
+                    public View onUpdateSharedElement(int position) {
+                        return position==1?mImageView1:mImageView2;
+                    }
+                });
             }
         });
 
@@ -78,19 +81,19 @@ public class MainActivity extends AppCompatActivity{
         Glide.with(this)
                 .load("http://ocvkuozgf.bkt.clouddn.com/14599544138261.png")
                 .into(mImageView2);
-        setExitSharedElementCallback(new SharedElementCallback() {
-            @Override
-            public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-                super.onSharedElementStart(sharedElementNames, sharedElements, sharedElementSnapshots);
-            }
-
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                super.onMapSharedElements(names, sharedElements);
-                if (sharedElements.size()==0) {
-                    sharedElements.put(names.get(0), names.get(0)==URLS[0]?mImageView1:mImageView2);
-                }
-            }
-        });
+//        setExitSharedElementCallback(new SharedElementCallback() {
+//            @Override
+//            public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+//                super.onSharedElementStart(sharedElementNames, sharedElements, sharedElementSnapshots);
+//            }
+//
+//            @Override
+//            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+//                super.onMapSharedElements(names, sharedElements);
+//                if (sharedElements.size()==0) {
+//                    sharedElements.put(names.get(0), names.get(0).equals(URLS[0])?mImageView1:mImageView2);
+//                }
+//            }
+//        });
     }
 }

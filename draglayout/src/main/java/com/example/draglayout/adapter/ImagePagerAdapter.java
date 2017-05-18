@@ -2,7 +2,6 @@ package com.example.draglayout.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.View;
 
 import com.example.draglayout.fragment.BaseTransitionFragment;
@@ -42,13 +41,6 @@ public class ImagePagerAdapter extends BaseTransitionPagerAdapter {
     @Override
     public String getTransitionName(int position) {
         if (position < getCount()) {
-            Log.d("BQ", "-----------------------------------");
-            Log.d("BQ", ""+position);
-            for (BaseTransitionFragment fragment : mFragments) {
-                Log.d("BQ", ""+fragment.getTransitionName());
-            }
-            Log.d("BQ", "-----------------------------------");
-            Log.d("BQ", mFragments.get(position).getTransitionName());
             return mFragments.get(position).getTransitionName();
         }
         return null;

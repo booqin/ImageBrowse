@@ -1,13 +1,5 @@
 package com.example.draglayout.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.example.draglayout.R;
-import com.example.draglayout.adapter.ImagePagerAdapter;
-import com.example.draglayout.fragment.ImageByPhotoViewFragment;
-
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
@@ -20,12 +12,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.transition.ChangeBounds;
 import android.transition.ChangeImageTransform;
 import android.transition.TransitionSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.example.draglayout.R;
+import com.example.draglayout.UpdateSharedElementListener;
+import com.example.draglayout.adapter.ImagePagerAdapter;
+import com.example.draglayout.fragment.ImageByPhotoViewFragment;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 图片浏览界面
@@ -39,6 +39,7 @@ public class BrowseActivity extends AppCompatActivity{
     public static final String TAG_W = "W";
     public static final String TAG_H = "H";
     public static final String TAG_POSITION = "POSITION";
+    public static  boolean isUpdateShare = true;
     private static String[] URLS;
 
     private LinearLayout mLayout;
@@ -71,6 +72,46 @@ public class BrowseActivity extends AppCompatActivity{
             intent.putExtra(TAG_H, transitionView.getHeight());
             intent.putExtra(TAG_POSITION, position);
             activity.startActivity(intent, options.toBundle());
+        }else {
+            activity.startActivity(intent);
+        }
+        URLS = urls;
+    }
+
+    /**
+     * 启动浏览界面
+     * @param activity
+     * @param transitionView 目标View，在Version大于21的时候实现共享元素
+     * @param urls 图片链接
+     * @param position 当前显示位置
+     */
+    public static void launchFromList(Activity activity, ImageView transitionView, final String[] urls, int position, final UpdateSharedElementListener updateSharedElementListener) {
+        Intent intent = new Intent();
+        intent.setClass(activity, BrowseActivity.class);
+        isUpdateShare = false;
+        // 这里指定了共享的视图元素
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptions options = ActivityOptions
+                    .makeSceneTransitionAnimation(activity, transitionView, urls[position]);
+            intent.putExtra(TAG_W, transitionView.getWidth());
+            intent.putExtra(TAG_H, transitionView.getHeight());
+            intent.putExtra(TAG_POSITION, position);
+            activity.startActivity(intent, options.toBundle());
+            activity.setExitSharedElementCallback(new SharedElementCallback() {
+                @Override
+                public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                    super.onMapSharedElements(names, sharedElements);
+                    if (sharedElements.size()!=0) {
+                        return;
+                    }
+                    if (updateSharedElementListener!=null) {
+                        int position = Integer.valueOf(names.get(0));
+                        sharedElements.clear();
+                        sharedElements.put(names.get(0), updateSharedElementListener.onUpdateSharedElement(position));
+//                        updateSharedElementListener.onUpdateSharedElement(position);
+                    }
+                }
+            });
         }else {
             activity.startActivity(intent);
         }
@@ -131,15 +172,24 @@ public class BrowseActivity extends AppCompatActivity{
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
                 super.onMapSharedElements(names, sharedElements);
-                Log.d("BQ", ""+mViewPager.getCurrentItem());
-                Log.d("BQ", ""+names.size());
-                Log.d("BQ", ""+names.get(0));
-                Log.d("BQ", ""+sharedElements.size());
-                Log.d("BQ", ""+sharedElements.toString());
                 sharedElements.clear();
-                sharedElements.put(mImagePagerAdapter.getTransitionName(mViewPager.getCurrentItem()), mImagePagerAdapter.getTransitionView(mViewPager.getCurrentItem()));
+//                sharedElements.put(mImagePagerAdapter.getTransitionName(mViewPager.getCurrentItem()), mImagePagerAdapter.getTransitionView(mViewPager.getCurrentItem()));
+                sharedElements.put(""+mViewPager.getCurrentItem(), mImagePagerAdapter.getTransitionView(mViewPager.getCurrentItem()));
             }
         });
+
+
+//        setEnterSharedElementCallback(new android.support.v4.app.SharedElementCallback() {
+//
+//            @Override
+//            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+//                super.onMapSharedElements(names, sharedElements);
+//                for (Map.Entry<String, View> stringViewEntry : sharedElements.entrySet()) {
+//                    sharedElements.put(stringViewEntry.getKey(), mImagePagerAdapter.getTransitionView(mViewPager.getCurrentItem()));
+//                }
+//            }
+//        });
+        isUpdateShare = true;
     }
 
     /**
