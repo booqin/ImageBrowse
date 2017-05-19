@@ -17,7 +17,7 @@ public abstract class BaseTransitionPagerAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
-    public abstract String getTransitionName(int position);
+    public abstract String getBaseName(int position);
 
     public abstract View getTransitionView(int position);
 }

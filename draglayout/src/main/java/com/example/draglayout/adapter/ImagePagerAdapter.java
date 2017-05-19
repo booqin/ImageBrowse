@@ -39,9 +39,9 @@ public class ImagePagerAdapter extends BaseTransitionPagerAdapter {
     }
 
     @Override
-    public String getTransitionName(int position) {
+    public String getBaseName(int position) {
         if (position < getCount()) {
-            return mFragments.get(position).getTransitionName();
+            return mFragments.get(position).getBaseName();
         }
         return null;
     }

@@ -15,7 +15,7 @@ public abstract class BaseTransitionFragment extends Fragment{
     /**
      * 转换的标签名
      */
-    public abstract String getTransitionName();
+    public abstract String getBaseName();
     /**
      * 转换的基准View
      */

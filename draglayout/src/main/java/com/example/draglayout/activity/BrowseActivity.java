@@ -21,7 +21,9 @@ import android.widget.LinearLayout;
 import com.example.draglayout.R;
 import com.example.draglayout.UpdateSharedElementListener;
 import com.example.draglayout.adapter.ImagePagerAdapter;
+import com.example.draglayout.bean.TransitionBean;
 import com.example.draglayout.fragment.ImageByPhotoViewFragment;
+import com.example.draglayout.utils.SharedElementUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +41,11 @@ public class BrowseActivity extends AppCompatActivity{
     public static final String TAG_W = "W";
     public static final String TAG_H = "H";
     public static final String TAG_POSITION = "POSITION";
-    public static  boolean isUpdateShare = true;
-    private static String[] URLS;
+    public static final String TAG_PATH = "PATH";
 
     private LinearLayout mLayout;
     private ViewPager mViewPager;
-    private List<String> mUrls = new ArrayList<>();
+    private List<String> mUrls;
 
     /** 基准View的宽高值 */
     private int mTransitionViewWidth;
@@ -61,21 +62,13 @@ public class BrowseActivity extends AppCompatActivity{
      * @param position 当前显示位置
      * @param thumbnailUrl 缩略图
      */
-    public static void launch(Activity activity, ImageView transitionView, String[] urls, int position, String thumbnailUrl) {
-        Intent intent = new Intent();
-        intent.setClass(activity, BrowseActivity.class);
-        // 这里指定了共享的视图元素
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            ActivityOptions options = ActivityOptions
-                    .makeSceneTransitionAnimation(activity, transitionView, urls[position]);
-            intent.putExtra(TAG_W, transitionView.getWidth());
-            intent.putExtra(TAG_H, transitionView.getHeight());
-            intent.putExtra(TAG_POSITION, position);
-            activity.startActivity(intent, options.toBundle());
-        }else {
-            activity.startActivity(intent);
-        }
-        URLS = urls;
+    public static void launch(Activity activity, final ImageView transitionView, List<String> urls, int position, String thumbnailUrl) {
+        launch(activity, transitionView, urls, position, new UpdateSharedElementListener() {
+            @Override
+            public View onUpdateSharedElement(int position, String url) {
+                return transitionView;
+            }
+        });
     }
 
     /**
@@ -85,37 +78,42 @@ public class BrowseActivity extends AppCompatActivity{
      * @param urls 图片链接
      * @param position 当前显示位置
      */
-    public static void launchFromList(Activity activity, ImageView transitionView, final String[] urls, int position, final UpdateSharedElementListener updateSharedElementListener) {
+    public static void launch(Activity activity, final View transitionView, final List<String> urls, int position, final UpdateSharedElementListener updateSharedElementListener) {
         Intent intent = new Intent();
         intent.setClass(activity, BrowseActivity.class);
-        isUpdateShare = false;
         // 这里指定了共享的视图元素
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptions options = ActivityOptions
-                    .makeSceneTransitionAnimation(activity, transitionView, urls[position]);
+                    .makeSceneTransitionAnimation(activity, transitionView, SharedElementUtil.getTransitionName(urls.get(position), position));
             intent.putExtra(TAG_W, transitionView.getWidth());
             intent.putExtra(TAG_H, transitionView.getHeight());
             intent.putExtra(TAG_POSITION, position);
+            String[] paths = new String[urls.size()];
+            urls.toArray(paths);
+            intent.putExtra(TAG_PATH, paths);
             activity.startActivity(intent, options.toBundle());
             activity.setExitSharedElementCallback(new SharedElementCallback() {
                 @Override
                 public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
                     super.onMapSharedElements(names, sharedElements);
-                    if (sharedElements.size()!=0) {
+                    if (sharedElements.size()!=0||names.size()==0) {
                         return;
                     }
                     if (updateSharedElementListener!=null) {
-                        int position = Integer.valueOf(names.get(0));
                         sharedElements.clear();
-                        sharedElements.put(names.get(0), updateSharedElementListener.onUpdateSharedElement(position));
-//                        updateSharedElementListener.onUpdateSharedElement(position);
+                        TransitionBean transitionBean = SharedElementUtil.getTransitionBean(names.get(0));
+                        if (transitionBean!=null) {
+                            sharedElements.put(names.get(0), updateSharedElementListener.onUpdateSharedElement(transitionBean.getPosition(), transitionBean.getUrl()));
+                        }
+                    }else {
+                        sharedElements.clear();
+                        sharedElements.put(names.get(0), transitionView);
                     }
                 }
             });
         }else {
             activity.startActivity(intent);
         }
-        URLS = urls;
     }
 
     @Override
@@ -135,14 +133,21 @@ public class BrowseActivity extends AppCompatActivity{
             getWindow().setSharedElementEnterTransition(transitionSet);
             postponeEnterTransition();
 
-            mTransitionViewWidth = getIntent().getIntExtra(TAG_W, -1);
-            mTransitionViewHeight = getIntent().getIntExtra(TAG_H, -1);
-            mPosition = getIntent().getIntExtra(TAG_POSITION, 0);
+            setEnterSharedElementCallback(new SharedElementCallback() {
+
+                @Override
+                public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                    super.onMapSharedElements(names, sharedElements);
+                    sharedElements.clear();
+                    sharedElements.put(SharedElementUtil.getTransitionName(mImagePagerAdapter.getBaseName(mViewPager.getCurrentItem()), mViewPager.getCurrentItem()), mImagePagerAdapter.getTransitionView(mViewPager.getCurrentItem()));
+                }
+            });
         }
+
+        initIntentData();
 
         setTheme(R.style.translucent);
         setContentView(R.layout.activity_image_browse);
-        initUrls();
         mLayout = (LinearLayout) findViewById(R.id.ll);
         mViewPager = (ViewPager) findViewById(R.id.vp);
 
@@ -167,37 +172,17 @@ public class BrowseActivity extends AppCompatActivity{
         });
         mViewPager.setCurrentItem(mPosition);
 
-        setEnterSharedElementCallback(new android.support.v4.app.SharedElementCallback() {
 
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                super.onMapSharedElements(names, sharedElements);
-                sharedElements.clear();
-//                sharedElements.put(mImagePagerAdapter.getTransitionName(mViewPager.getCurrentItem()), mImagePagerAdapter.getTransitionView(mViewPager.getCurrentItem()));
-                sharedElements.put(""+mViewPager.getCurrentItem(), mImagePagerAdapter.getTransitionView(mViewPager.getCurrentItem()));
-            }
-        });
-
-
-//        setEnterSharedElementCallback(new android.support.v4.app.SharedElementCallback() {
-//
-//            @Override
-//            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-//                super.onMapSharedElements(names, sharedElements);
-//                for (Map.Entry<String, View> stringViewEntry : sharedElements.entrySet()) {
-//                    sharedElements.put(stringViewEntry.getKey(), mImagePagerAdapter.getTransitionView(mViewPager.getCurrentItem()));
-//                }
-//            }
-//        });
-        isUpdateShare = true;
     }
 
-    /**
-     * 初始化URL
-     */
-    private void initUrls(){
-        for (String url : URLS) {
-            mUrls.add(url);
+    private void initIntentData() {
+        mTransitionViewWidth = getIntent().getIntExtra(TAG_W, -1);
+        mTransitionViewHeight = getIntent().getIntExtra(TAG_H, -1);
+        mPosition = getIntent().getIntExtra(TAG_POSITION, 0);
+        String[] paths = getIntent().getStringArrayExtra(TAG_PATH);
+        mUrls = new ArrayList<>();
+        for (String path : paths) {
+            mUrls.add(path);
         }
     }
 }

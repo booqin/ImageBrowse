@@ -93,9 +93,9 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
         super.onViewCreated(view, savedInstanceState);
         mPhotoView = (PhotoView) view.findViewById(R.id.photo_view);
         mPhotoView.setScaleLevels(0.5f, 1f, 2f);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mPhotoView.setTransitionName(mPath);
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            mPhotoView.setTransitionName(mPath);
+//        }
         setGlide();
 
         mDragLayout.setDragListener(new DragChangedListener() {
@@ -142,7 +142,7 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
     }
 
     @Override
-    public String getTransitionName() {
+    public String getBaseName() {
         return mPath;
     }
 

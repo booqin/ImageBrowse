@@ -30,5 +30,6 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.1'
     compile "com.github.chrisbanes:PhotoView:$PHOTO_VIEW_VERSION"
     compile "com.github.bumptech.glide:glide:$GLIDE_VERSION"
+    compile "com.google.code.gson:gson:2.8.0"
     testCompile 'junit:junit:4.12'
 }
