@@ -26,6 +26,7 @@ import com.example.draglayout.fragment.ImageByPhotoViewFragment;
 import com.example.draglayout.utils.SharedElementUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -56,13 +57,12 @@ public class BrowseActivity extends AppCompatActivity{
 
     /**
      * 启动浏览界面
-     * @param activity
+     * @param activity activity
      * @param transitionView 目标View，在Version大于21的时候实现共享元素
      * @param urls 图片链接
      * @param position 当前显示位置
-     * @param thumbnailUrl 缩略图
      */
-    public static void launch(Activity activity, final ImageView transitionView, List<String> urls, int position, String thumbnailUrl) {
+    public static void launch(Activity activity, final ImageView transitionView, List<String> urls, int position) {
         launch(activity, transitionView, urls, position, new UpdateSharedElementListener() {
             @Override
             public View onUpdateSharedElement(int position, String url) {
@@ -73,10 +73,12 @@ public class BrowseActivity extends AppCompatActivity{
 
     /**
      * 启动浏览界面
-     * @param activity
+     *
+     * @param activity activity
      * @param transitionView 目标View，在Version大于21的时候实现共享元素
      * @param urls 图片链接
      * @param position 当前显示位置
+     * @param updateSharedElementListener 回调接口，用于更新列表页回退动画的基准View
      */
     public static void launch(Activity activity, final View transitionView, final List<String> urls, int position, final UpdateSharedElementListener updateSharedElementListener) {
         Intent intent = new Intent();
@@ -96,14 +98,16 @@ public class BrowseActivity extends AppCompatActivity{
                 @Override
                 public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
                     super.onMapSharedElements(names, sharedElements);
+                    //进入时不需要更新SE
                     if (sharedElements.size()!=0||names.size()==0) {
                         return;
                     }
+                    TransitionBean transitionBean = SharedElementUtil.getTransitionBean(names.get(0));
                     if (updateSharedElementListener!=null) {
+                        View view = updateSharedElementListener.onUpdateSharedElement(transitionBean.getPosition(), transitionBean.getUrl());
                         sharedElements.clear();
-                        TransitionBean transitionBean = SharedElementUtil.getTransitionBean(names.get(0));
                         if (transitionBean!=null) {
-                            sharedElements.put(names.get(0), updateSharedElementListener.onUpdateSharedElement(transitionBean.getPosition(), transitionBean.getUrl()));
+                            sharedElements.put(names.get(0), view==null?transitionView:view);
                         }
                     }else {
                         sharedElements.clear();
@@ -131,6 +135,7 @@ public class BrowseActivity extends AppCompatActivity{
             transitionSet.addTransition(new ChangeBounds());
             transitionSet.addTransition(new ChangeImageTransform());
             getWindow().setSharedElementEnterTransition(transitionSet);
+            //延时加载
             postponeEnterTransition();
 
             setEnterSharedElementCallback(new SharedElementCallback() {
@@ -175,14 +180,15 @@ public class BrowseActivity extends AppCompatActivity{
 
     }
 
+    /**
+     * 初始化intent数据
+     */
     private void initIntentData() {
         mTransitionViewWidth = getIntent().getIntExtra(TAG_W, -1);
         mTransitionViewHeight = getIntent().getIntExtra(TAG_H, -1);
         mPosition = getIntent().getIntExtra(TAG_POSITION, 0);
         String[] paths = getIntent().getStringArrayExtra(TAG_PATH);
         mUrls = new ArrayList<>();
-        for (String path : paths) {
-            mUrls.add(path);
-        }
+        Collections.addAll(mUrls, paths);
     }
 }
