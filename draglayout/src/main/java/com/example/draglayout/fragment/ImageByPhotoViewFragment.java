@@ -1,12 +1,5 @@
 package com.example.draglayout.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-
 import com.bumptech.glide.Glide;
 import com.example.draglayout.DragChangedListener;
 import com.example.draglayout.DragLayout;
@@ -14,6 +7,13 @@ import com.example.draglayout.R;
 import com.example.draglayout.activity.BrowseActivity;
 import com.github.chrisbanes.photoview.OnScaleChangedListener;
 import com.github.chrisbanes.photoview.PhotoView;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 /**
  * 大图浏览界面
@@ -29,20 +29,20 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
     private PhotoView mPhotoView;
     private String mPath;
     private DragLayout mDragLayout;
-    private ImageByPhotoViewFragment.ViewPositionChangeListener mViewPositionChangeListener;
+    private DragChangedListener mDragChangedListener;
 
     private int mOverrideWidth;
     private int mOverrideHeight;
 
     public static ImageByPhotoViewFragment newInstance(String path, int width, int height,
-            ImageByPhotoViewFragment.ViewPositionChangeListener viewPositionChangeListener) {
+            DragChangedListener dragChangedListener) {
         ImageByPhotoViewFragment newFragment = new ImageByPhotoViewFragment();
         Bundle bundle = new Bundle();
         bundle.putString(TAG, path);
         bundle.putInt(BrowseActivity.TAG_W, width);
         bundle.putInt(BrowseActivity.TAG_H, height);
         newFragment.setArguments(bundle);
-        newFragment.setViewPositionChangeListener(viewPositionChangeListener);
+        newFragment.setDragChangedListener(dragChangedListener);
 
         return newFragment;
 
@@ -104,14 +104,16 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
                     mPhotoView.setScale(scale);
                 }
 
-                if (mViewPositionChangeListener != null) {
-                    mViewPositionChangeListener.onViewPositionChanged(scale);
+                if (mDragChangedListener!=null) {
+                    mDragChangedListener.onViewPositionChanged(changedView, scale);
                 }
             }
 
             @Override
             public boolean onViewReleased() {
-                getActivity().onBackPressed();
+                if (mDragChangedListener!=null) {
+                    return mDragChangedListener.onViewReleased();
+                }
                 return true;
             }
         });
@@ -128,13 +130,6 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
         });
     }
 
-    /**
-     * 设置位置监听
-     */
-    public void setViewPositionChangeListener(
-            ImageByPhotoViewFragment.ViewPositionChangeListener viewPositionChangeListener) {
-        mViewPositionChangeListener = viewPositionChangeListener;
-    }
 
     @Override
     public String getBaseName() {
@@ -146,24 +141,24 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
         return mPhotoView;
     }
 
+    /**
+     * 设置拖拽监听
+     */
+    public void setDragChangedListener(DragChangedListener dragChangedListener) {
+        mDragChangedListener = dragChangedListener;
+    }
+
     private void setGlide() {
         //获取缩略图，使用指定大小，同时关闭动画，这样才能利用ActivityA中的缓存图达到元素共享的效果
         if (mOverrideWidth > 0 && mOverrideHeight > 0) {
 //            DrawableRequestBuilder<?> thumb = Glide.with(this).load(mPath).override(mOverrideWidth, mOverrideHeight);
 //            Glide.with(this).load(mPath).override(mOverrideWidth, mOverrideHeight).dontAnimate().into(mPhotoView);
-            Glide.with(this).load(mPath).dontAnimate().into(mPhotoView);
+            Glide.with(this).load(mPath).thumbnail(0.1f).dontAnimate().into(mPhotoView);
 
         } else {
             Glide.with(this).load(mPath).into(mPhotoView);
         }
 
-    }
-
-    public interface ViewPositionChangeListener {
-        /**
-         * 当位置发生变化时回调
-         */
-        void onViewPositionChanged(float scale);
     }
 
 }
