@@ -1,17 +1,5 @@
 package com.example.draglayout.activity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import com.example.draglayout.DragChangedListener;
-import com.example.draglayout.R;
-import com.example.draglayout.UpdateSharedElementListener;
-import com.example.draglayout.adapter.ImagePagerAdapter;
-import com.example.draglayout.bean.TransitionBean;
-import com.example.draglayout.utils.SharedElementUtil;
-
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
@@ -29,6 +17,18 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.example.draglayout.DragChangedListener;
+import com.example.draglayout.R;
+import com.example.draglayout.UpdateSharedElementListener;
+import com.example.draglayout.adapter.ImagePagerAdapter;
+import com.example.draglayout.bean.TransitionBean;
+import com.example.draglayout.utils.SharedElementUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 图片浏览界面
