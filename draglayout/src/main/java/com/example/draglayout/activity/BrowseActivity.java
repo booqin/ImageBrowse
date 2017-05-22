@@ -56,6 +56,16 @@ public class BrowseActivity extends AppCompatActivity{
     private ImagePagerAdapter mImagePagerAdapter;
 
     /**
+     * 启动浏览界面 单图
+     * @param activity activity
+     * @param transitionView 目标View，在Version大于21的时候实现共享元素
+     * @param url 图片链接
+     */
+    public static void launch(Activity activity, final ImageView transitionView, String url) {
+        //todo 单图情况
+    }
+
+    /**
      * 启动浏览界面
      * @param activity activity
      * @param transitionView 目标View，在Version大于21的时候实现共享元素
@@ -69,6 +79,17 @@ public class BrowseActivity extends AppCompatActivity{
                 return transitionView;
             }
         });
+    }
+
+    /**
+     * 启动浏览界面
+     * @param activity activity
+     * @param transitionView 目标View，在Version大于21的时候实现共享元素
+     * @param urls 图片链接
+     * @param position 当前显示位置
+     */
+    public static void launch(Activity activity, final ImageView transitionView, List<String> urls, int position, boolean isShare) {
+        //todo 无共享动画
     }
 
     /**
