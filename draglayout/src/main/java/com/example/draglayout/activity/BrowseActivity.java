@@ -1,5 +1,17 @@
 package com.example.draglayout.activity;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import com.example.draglayout.DragChangedListener;
+import com.example.draglayout.R;
+import com.example.draglayout.UpdateSharedElementListener;
+import com.example.draglayout.adapter.ImagePagerAdapter;
+import com.example.draglayout.bean.TransitionBean;
+import com.example.draglayout.utils.SharedElementUtil;
+
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
@@ -17,18 +29,6 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import com.example.draglayout.R;
-import com.example.draglayout.UpdateSharedElementListener;
-import com.example.draglayout.adapter.ImagePagerAdapter;
-import com.example.draglayout.bean.TransitionBean;
-import com.example.draglayout.fragment.ImageByPhotoViewFragment;
-import com.example.draglayout.utils.SharedElementUtil;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 图片浏览界面
@@ -104,16 +104,19 @@ public class BrowseActivity extends AppCompatActivity{
     public static void launch(Activity activity, final View transitionView, final List<String> urls, int position, final UpdateSharedElementListener updateSharedElementListener) {
         Intent intent = new Intent();
         intent.setClass(activity, BrowseActivity.class);
+
+        String[] paths = new String[urls.size()];
+        urls.toArray(paths);
+        intent.putExtra(TAG_PATH, paths);
+        intent.putExtra(TAG_POSITION, position);
+
         // 这里指定了共享的视图元素
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptions options = ActivityOptions
                     .makeSceneTransitionAnimation(activity, transitionView, SharedElementUtil.getTransitionName(urls.get(position), position));
             intent.putExtra(TAG_W, transitionView.getWidth());
             intent.putExtra(TAG_H, transitionView.getHeight());
-            intent.putExtra(TAG_POSITION, position);
-            String[] paths = new String[urls.size()];
-            urls.toArray(paths);
-            intent.putExtra(TAG_PATH, paths);
+
             activity.startActivity(intent, options.toBundle());
             activity.setExitSharedElementCallback(new SharedElementCallback() {
                 @Override
@@ -178,10 +181,17 @@ public class BrowseActivity extends AppCompatActivity{
         mViewPager = (ViewPager) findViewById(R.id.vp);
 
         mImagePagerAdapter = new ImagePagerAdapter(getSupportFragmentManager(), mUrls, mTransitionViewWidth, mTransitionViewHeight,
-                new ImageByPhotoViewFragment.ViewPositionChangeListener() {
+                new DragChangedListener() {
                     @Override
-                    public void onViewPositionChanged(float scale) {
+                    public void onViewPositionChanged(View changedView, float scale) {
                         mLayout.setAlpha(scale);
+                    }
+
+                    @Override
+                    public boolean onViewReleased() {
+                        mLayout.setVisibility(View.INVISIBLE);
+                        onBackPressed();
+                        return true;
                     }
                 });
 

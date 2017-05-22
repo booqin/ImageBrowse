@@ -1,14 +1,15 @@
 package com.example.draglayout.adapter;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.view.View;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.example.draglayout.DragChangedListener;
 import com.example.draglayout.fragment.BaseTransitionFragment;
 import com.example.draglayout.fragment.ImageByPhotoViewFragment;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.view.View;
 
 /**
  * 图片查看适配器
@@ -21,10 +22,10 @@ public class ImagePagerAdapter extends BaseTransitionPagerAdapter {
 
     List<BaseTransitionFragment> mFragments = new ArrayList<>();
 
-    public ImagePagerAdapter(FragmentManager fm, List<String> dataSets, int w, int h, ImageByPhotoViewFragment.ViewPositionChangeListener viewPositionChangeListener) {
+    public ImagePagerAdapter(FragmentManager fm, List<String> dataSets, int w, int h, DragChangedListener dragChangedListener) {
         super(fm);
         for (String dataSet : dataSets) {
-            mFragments.add(ImageByPhotoViewFragment.newInstance(dataSet, w, h, viewPositionChangeListener));
+            mFragments.add(ImageByPhotoViewFragment.newInstance(dataSet, w, h, dragChangedListener));
         }
     }
 
