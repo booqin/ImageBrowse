@@ -89,7 +89,7 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
                     Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPhotoView = (PhotoView) view.findViewById(R.id.photo_view);
-        mPhotoView.setScaleLevels(0.5f, 1f, 2f);
+        mPhotoView.setScaleLevels(1f, 1.5f, 2f);
         setGlide();
 
         mDragLayout.setDragListener(new DragChangedListener() {

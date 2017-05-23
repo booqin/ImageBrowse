@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity{
         mImageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                BrowseActivity.launchWithShareElement(MainActivity.this, mImageView2, mUrlList, 0);
+                BrowseActivity.launchWithShareElement(MainActivity.this, mImageView2, mUrlList.get(0));
             }
         });
 
