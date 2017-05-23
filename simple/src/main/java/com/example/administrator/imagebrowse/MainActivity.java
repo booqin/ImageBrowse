@@ -1,5 +1,6 @@
 package com.example.administrator.imagebrowse;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity{
     private ImageView mImageView1;
     private ImageView mImageView2;
     private Button mButton;
-    private List<String> mUrlList;
+    private List<Uri> mUrlList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +43,8 @@ public class MainActivity extends AppCompatActivity{
 
         mButton = (Button) findViewById(R.id.button);
 
-        for (String url : URLS) {
-            mUrlList.add(url);
+        for (String path : URLS) {
+            mUrlList.add(Uri.parse(path));
         }
 
         mImageView1.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity{
         mImageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BrowseActivity.launchWithShareElement(MainActivity.this, mImageView2, mUrlList, 0);
+//                BrowseActivity.launchWithShareElement(MainActivity.this, mImageView2, mUrlList, 0);
             }
         });
 

@@ -7,6 +7,7 @@ import com.example.draglayout.DragChangedListener;
 import com.example.draglayout.fragment.BaseTransitionFragment;
 import com.example.draglayout.fragment.ImageByPhotoViewFragment;
 
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
@@ -22,9 +23,9 @@ public class ImagePagerAdapter extends BaseTransitionPagerAdapter {
 
     List<BaseTransitionFragment> mFragments = new ArrayList<>();
 
-    public ImagePagerAdapter(FragmentManager fm, List<String> dataSets, boolean isShareElement, DragChangedListener dragChangedListener) {
+    public ImagePagerAdapter(FragmentManager fm, List<Uri> dataSets, boolean isShareElement, DragChangedListener dragChangedListener) {
         super(fm);
-        for (String dataSet : dataSets) {
+        for (Uri dataSet : dataSets) {
             mFragments.add(ImageByPhotoViewFragment.newInstance(dataSet, isShareElement, dragChangedListener));
         }
     }

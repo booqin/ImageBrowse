@@ -8,6 +8,7 @@ import com.example.draglayout.activity.BrowseActivity;
 import com.github.chrisbanes.photoview.OnScaleChangedListener;
 import com.github.chrisbanes.photoview.PhotoView;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -27,17 +28,17 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
     private static final String TAG = ImageByPhotoViewFragment.class.getSimpleName();
 
     private PhotoView mPhotoView;
-    private String mPath;
+    private Uri mPath;
     private DragLayout mDragLayout;
     private DragChangedListener mDragChangedListener;
     private boolean mIsShareElement;
 
 
-    public static ImageByPhotoViewFragment newInstance(String path, boolean isShareElement,
+    public static ImageByPhotoViewFragment newInstance(Uri path, boolean isShareElement,
             DragChangedListener dragChangedListener) {
         ImageByPhotoViewFragment newFragment = new ImageByPhotoViewFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(TAG, path);
+        bundle.putParcelable(TAG, path);
         bundle.putBoolean(BrowseActivity.TAG_SHARE_ELEMENT, isShareElement);
         newFragment.setArguments(bundle);
         newFragment.setDragChangedListener(dragChangedListener);
@@ -54,11 +55,13 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
 
         Bundle args = getArguments();
         if (args != null) {
-            mPath = args.getString(TAG);
+            mPath = args.getParcelable(TAG);
             mIsShareElement = args.getBoolean(BrowseActivity.TAG_SHARE_ELEMENT);
         } else {
-            mPath = "";
             mIsShareElement = false;
+        }
+        if(mPath==null){
+            mPath = Uri.EMPTY;
         }
     }
 
@@ -129,7 +132,7 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
 
     @Override
     public String getBaseName() {
-        return mPath;
+        return mPath.getPath();
     }
 
     @Override
@@ -149,7 +152,6 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
         if (mIsShareElement) {
 //            DrawableRequestBuilder<?> thumb = Glide.with(this).load(mPath).override(mOverrideWidth, mOverrideHeight);
 //            Glide.with(this).load(mPath).override(mOverrideWidth, mOverrideHeight).dontAnimate().into(mPhotoView);
-            Glide.with(this).load(mPath).thumbnail(0.1f).dontAnimate().into(mPhotoView);
             Glide.with(this).load(mPath).thumbnail(0.1f).dontAnimate().into(mPhotoView);
 
         } else {
