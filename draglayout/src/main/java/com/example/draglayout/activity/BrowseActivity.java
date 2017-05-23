@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -39,21 +40,38 @@ import java.util.Map;
  */
 public class BrowseActivity extends AppCompatActivity{
 
-    public static final String TAG_W = "W";
-    public static final String TAG_H = "H";
     public static final String TAG_POSITION = "POSITION";
     public static final String TAG_PATH = "PATH";
+    public static final String TAG_SHARE_ELEMENT = "SHARE_ELEMENT";
 
     private LinearLayout mLayout;
     private ViewPager mViewPager;
     private List<String> mUrls;
 
-    /** 基准View的宽高值 */
-    private int mTransitionViewWidth;
-    private int mTransitionViewHeight;
-
     private int mPosition;
+    private boolean mIsShareElement;
     private ImagePagerAdapter mImagePagerAdapter;
+
+    /**
+     * 无共享元素动画的启动模式，启动浏览界面，单图
+     * @param activity activity
+     * @param url 图片链接
+     */
+    public static void launch(Activity activity, String url) {
+        List<String> urls = new ArrayList<>();
+        urls.add(url);
+        launch(activity, urls, 0);
+    }
+
+    /**
+     * 无共享元素动画的启动模式，启动浏览界面，多图
+     * @param activity activity
+     * @param urls 图片链接
+     * @param position 当前显示位置
+     */
+    public static void launch(Activity activity, List<String> urls, int position) {
+        launchWithShareElement(activity, null, urls, position, false, null);
+    }
 
     /**
      * 启动浏览界面 单图
@@ -61,8 +79,10 @@ public class BrowseActivity extends AppCompatActivity{
      * @param transitionView 目标View，在Version大于21的时候实现共享元素
      * @param url 图片链接
      */
-    public static void launch(Activity activity, final ImageView transitionView, String url) {
-        //todo 单图情况
+    public static void launchWithShareElement(Activity activity, final ImageView transitionView, String url) {
+        List<String> urls = new ArrayList<>();
+        urls.add(url);
+        launchWithShareElement(activity, transitionView, urls, 0);
     }
 
     /**
@@ -72,24 +92,13 @@ public class BrowseActivity extends AppCompatActivity{
      * @param urls 图片链接
      * @param position 当前显示位置
      */
-    public static void launch(Activity activity, final ImageView transitionView, List<String> urls, int position) {
-        launch(activity, transitionView, urls, position, new UpdateSharedElementListener() {
+    public static void launchWithShareElement(Activity activity, final ImageView transitionView, List<String> urls, int position) {
+        launchWithShareElement(activity, transitionView, urls, position, new UpdateSharedElementListener() {
             @Override
             public View onUpdateSharedElement(int position, String url) {
                 return transitionView;
             }
         });
-    }
-
-    /**
-     * 启动浏览界面
-     * @param activity activity
-     * @param transitionView 目标View，在Version大于21的时候实现共享元素
-     * @param urls 图片链接
-     * @param position 当前显示位置
-     */
-    public static void launch(Activity activity, final ImageView transitionView, List<String> urls, int position, boolean isShare) {
-        //todo 无共享动画
     }
 
     /**
@@ -101,21 +110,32 @@ public class BrowseActivity extends AppCompatActivity{
      * @param position 当前显示位置
      * @param updateSharedElementListener 回调接口，用于更新列表页回退动画的基准View
      */
-    public static void launch(Activity activity, final View transitionView, final List<String> urls, int position, final UpdateSharedElementListener updateSharedElementListener) {
+    public static void launchWithShareElement(Activity activity, final View transitionView, final List<String> urls, int position, final UpdateSharedElementListener updateSharedElementListener) {
+        launchWithShareElement(activity, transitionView, urls, position, true, updateSharedElementListener);
+    }
+
+    /**
+     * 启动浏览界面
+     *  @param activity activity
+     * @param transitionView 目标View，在Version大于21的时候实现共享元素
+     * @param urls 图片链接
+     * @param position 当前显示位置
+     * @param updateSharedElementListener 回调接口，用于更新列表页回退动画的基准View
+     */
+    private static void launchWithShareElement(Activity activity, final View transitionView, final List<String> urls, int position,
+            boolean isShareElement, final UpdateSharedElementListener updateSharedElementListener) {
         Intent intent = new Intent();
         intent.setClass(activity, BrowseActivity.class);
 
         String[] paths = new String[urls.size()];
-        urls.toArray(paths);
         intent.putExtra(TAG_PATH, paths);
         intent.putExtra(TAG_POSITION, position);
+        intent.putExtra(TAG_SHARE_ELEMENT, isShareElement);
 
         // 这里指定了共享的视图元素
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && isShareElement) {
             ActivityOptions options = ActivityOptions
                     .makeSceneTransitionAnimation(activity, transitionView, SharedElementUtil.getTransitionName(urls.get(position), position));
-            intent.putExtra(TAG_W, transitionView.getWidth());
-            intent.putExtra(TAG_H, transitionView.getHeight());
 
             activity.startActivity(intent, options.toBundle());
             activity.setExitSharedElementCallback(new SharedElementCallback() {
@@ -180,7 +200,7 @@ public class BrowseActivity extends AppCompatActivity{
         mLayout = (LinearLayout) findViewById(R.id.ll);
         mViewPager = (ViewPager) findViewById(R.id.vp);
 
-        mImagePagerAdapter = new ImagePagerAdapter(getSupportFragmentManager(), mUrls, mTransitionViewWidth, mTransitionViewHeight,
+        mImagePagerAdapter = new ImagePagerAdapter(getSupportFragmentManager(), mUrls, mIsShareElement,
                 new DragChangedListener() {
                     @Override
                     public void onViewPositionChanged(View changedView, float scale) {
@@ -215,9 +235,8 @@ public class BrowseActivity extends AppCompatActivity{
      * 初始化intent数据
      */
     private void initIntentData() {
-        mTransitionViewWidth = getIntent().getIntExtra(TAG_W, -1);
-        mTransitionViewHeight = getIntent().getIntExtra(TAG_H, -1);
         mPosition = getIntent().getIntExtra(TAG_POSITION, 0);
+        mIsShareElement = getIntent().getBooleanExtra(TAG_SHARE_ELEMENT, false);
         String[] paths = getIntent().getStringArrayExtra(TAG_PATH);
         mUrls = new ArrayList<>();
         Collections.addAll(mUrls, paths);

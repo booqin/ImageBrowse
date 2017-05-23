@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity{
         mImageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                BrowseActivity.launch(MainActivity.this, mImageView1, URLS, 1, "http://ocvkuozgf.bkt.clouddn.com/AutoLayout.png");
-                BrowseActivity.launch(MainActivity.this, mImageView1, mUrlList, 1, new UpdateSharedElementListener() {
+//                BrowseActivity.launchWithShareElement(MainActivity.this, mImageView1, URLS, 1, "http://ocvkuozgf.bkt.clouddn.com/AutoLayout.png");
+                BrowseActivity.launchWithShareElement(MainActivity.this, mImageView1, mUrlList, 1, new UpdateSharedElementListener() {
                     @Override
                     public View onUpdateSharedElement(int position, String url) {
                         return position==1?mImageView1:mImageView2;
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity{
         mImageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BrowseActivity.launch(MainActivity.this, mImageView2, mUrlList, 0);
+                BrowseActivity.launchWithShareElement(MainActivity.this, mImageView2, mUrlList, 0);
             }
         });
 

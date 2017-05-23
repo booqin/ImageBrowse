@@ -30,17 +30,15 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
     private String mPath;
     private DragLayout mDragLayout;
     private DragChangedListener mDragChangedListener;
+    private boolean mIsShareElement;
 
-    private int mOverrideWidth;
-    private int mOverrideHeight;
 
-    public static ImageByPhotoViewFragment newInstance(String path, int width, int height,
+    public static ImageByPhotoViewFragment newInstance(String path, boolean isShareElement,
             DragChangedListener dragChangedListener) {
         ImageByPhotoViewFragment newFragment = new ImageByPhotoViewFragment();
         Bundle bundle = new Bundle();
         bundle.putString(TAG, path);
-        bundle.putInt(BrowseActivity.TAG_W, width);
-        bundle.putInt(BrowseActivity.TAG_H, height);
+        bundle.putBoolean(BrowseActivity.TAG_SHARE_ELEMENT, isShareElement);
         newFragment.setArguments(bundle);
         newFragment.setDragChangedListener(dragChangedListener);
 
@@ -57,12 +55,10 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
         Bundle args = getArguments();
         if (args != null) {
             mPath = args.getString(TAG);
-            mOverrideWidth = args.getInt(BrowseActivity.TAG_W);
-            mOverrideHeight = args.getInt(BrowseActivity.TAG_H);
+            mIsShareElement = args.getBoolean(BrowseActivity.TAG_SHARE_ELEMENT);
         } else {
             mPath = "";
-            mOverrideWidth = -1;
-            mOverrideHeight = -1;
+            mIsShareElement = false;
         }
     }
 
@@ -150,9 +146,10 @@ public class ImageByPhotoViewFragment extends BaseTransitionFragment {
 
     private void setGlide() {
         //获取缩略图，使用指定大小，同时关闭动画，这样才能利用ActivityA中的缓存图达到元素共享的效果
-        if (mOverrideWidth > 0 && mOverrideHeight > 0) {
+        if (mIsShareElement) {
 //            DrawableRequestBuilder<?> thumb = Glide.with(this).load(mPath).override(mOverrideWidth, mOverrideHeight);
 //            Glide.with(this).load(mPath).override(mOverrideWidth, mOverrideHeight).dontAnimate().into(mPhotoView);
+            Glide.with(this).load(mPath).thumbnail(0.1f).dontAnimate().into(mPhotoView);
             Glide.with(this).load(mPath).thumbnail(0.1f).dontAnimate().into(mPhotoView);
 
         } else {

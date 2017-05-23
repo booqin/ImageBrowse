@@ -22,10 +22,10 @@ public class ImagePagerAdapter extends BaseTransitionPagerAdapter {
 
     List<BaseTransitionFragment> mFragments = new ArrayList<>();
 
-    public ImagePagerAdapter(FragmentManager fm, List<String> dataSets, int w, int h, DragChangedListener dragChangedListener) {
+    public ImagePagerAdapter(FragmentManager fm, List<String> dataSets, boolean isShareElement, DragChangedListener dragChangedListener) {
         super(fm);
         for (String dataSet : dataSets) {
-            mFragments.add(ImageByPhotoViewFragment.newInstance(dataSet, w, h, dragChangedListener));
+            mFragments.add(ImageByPhotoViewFragment.newInstance(dataSet, isShareElement, dragChangedListener));
         }
     }
 
