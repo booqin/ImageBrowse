@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity{
         mImageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                BrowseActivity.launchWithShareElement(MainActivity.this, mImageView1, URLS, 1, "http://ocvkuozgf.bkt.clouddn.com/AutoLayout.png");
                 BrowseActivity.launchWithShareElement(MainActivity.this, mImageView1, mUrlList, 1, new UpdateSharedElementListener() {
                     @Override
                     public View onUpdateSharedElement(int position, String url) {

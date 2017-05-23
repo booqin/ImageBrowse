@@ -30,6 +30,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * 图片浏览界面
@@ -44,8 +45,11 @@ public class BrowseActivity extends AppCompatActivity {
     public static final String TAG_PATH = "PATH";
     public static final String TAG_SHARE_ELEMENT = "SHARE_ELEMENT";
 
-    private LinearLayout mLayout;
+    private View mLayout;
     private ViewPager mViewPager;
+    private TextView mTVCurrent;
+    private TextView mTVSlashPage;
+    private TextView mTVTotal;
     private List<Uri> mUris;
 
     private int mPosition;
@@ -208,8 +212,8 @@ public class BrowseActivity extends AppCompatActivity {
 
         setTheme(R.style.translucent);
         setContentView(R.layout.activity_image_browse);
-        mLayout = (LinearLayout) findViewById(R.id.ll);
-        mViewPager = (ViewPager) findViewById(R.id.vp);
+
+        initView();
 
         mImagePagerAdapter = new ImagePagerAdapter(getSupportFragmentManager(), mUris, mIsShareElement,
                 new DragChangedListener() {
@@ -238,7 +242,40 @@ public class BrowseActivity extends AppCompatActivity {
             }
         });
         mViewPager.setCurrentItem(mPosition);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setIndicator(mViewPager.getCurrentItem()+1, mUris.size());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        if (mUris.size()!=0) {
+            setIndicator(mViewPager.getCurrentItem()+1, mUris.size());
+        }
+    }
+
+    private void setIndicator(int current, int total) {
+        mTVCurrent.setText(String.valueOf(current));
+        mTVTotal.setText(String.valueOf(total));
+        mTVSlashPage.setVisibility(View.VISIBLE);
+    }
+
+    private void initView() {
+        mLayout = findViewById(R.id.root);
+        mViewPager = (ViewPager) findViewById(R.id.vp);
+        mTVCurrent = (TextView) findViewById(R.id.current_page);
+        mTVTotal = (TextView) findViewById(R.id.total_page);
+        mTVSlashPage = (TextView) findViewById(R.id.slash_page);
     }
 
     /**
